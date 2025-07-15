@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { use, useState, useEffect } from 'react';
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState('');
-
+  const [posts, setposts] = useState([]);
   const addTodo = () => {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -11,7 +11,14 @@ export default function TodoList() {
     setTodos([...todos, newTodo]);
     setText('');
   };
-
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setposts([data]);
+      })
+  }, []);
   const toggleComplete = (id) => {
     setTodos(todos.map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -24,6 +31,13 @@ export default function TodoList() {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') addTodo();
+  };
+  const handledelete = async (id) => {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+        method: 'DELETE',
+      });
+        setposts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+    
   };
 
   return (
@@ -58,6 +72,15 @@ export default function TodoList() {
             >
               delete
             </button>
+          </li>
+        ))}
+      </ul>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>
+            <span>{post.title}</span>
+            <button data-testid="delete-api" onClick={() => { handledelete(post.id) }}>delete the list</button>
+
           </li>
         ))}
       </ul>

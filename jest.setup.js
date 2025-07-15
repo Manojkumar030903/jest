@@ -1,6 +1,11 @@
-// jest.setup.js
-import { TextEncoder, TextDecoder } from 'util';
 import '@testing-library/jest-dom';
+import 'whatwg-fetch';
 
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+import { TextEncoder, TextDecoder } from 'util';
+
+if (!global.TextEncoder) {
+  global.TextEncoder = TextEncoder;
+}
+if (!global.TextDecoder) {
+  global.TextDecoder = TextDecoder;
+}
